@@ -1,0 +1,66 @@
+from django.shortcuts import render
+from django.http import HttpResponse
+from django.template import RequestContext
+from scratchApp.models import User
+from scratchApp.forms import ContactForm,LoginForm
+from django.core.mail import send_mail
+# Create your views here.
+
+def hello(request):
+    return HttpResponse("Hello World")
+    
+
+def view_browser(request):
+    
+    ua = request.META.get('HTTP_USER_AGENT', 'unknown')
+    return HttpResponse("Your browser is %s" % ua)
+    
+def home(request):
+    form=ContactForm()
+    login_form=LoginForm
+    return render(request,"home.html",{'form':form,'login_form':login_form})
+    
+def form_search(request):
+    form=ContactForm()
+    return render(request,'form.html',{'form':form})
+    
+def submit_data(request):
+    context=RequestContext(request)
+    if request.method == 'POST':
+        
+        
+        mail_title = 'Hello!'
+        message = 'Have you received this mail?'
+        email = 'admin@ipl.com'
+        recipients = request.POST['email']
+
+        send_mail(mail_title, message, email, [recipients])
+        return HttpResponse("Registration Successful.")
+            
+    else:
+        return HttpResponse("The form is invalid")
+            
+            
+    
+def login_check(request):
+    if request.method!='POST':
+        form=ContactForm()
+        login_form=LoginForm()
+        return render(request,"home.html",{'form':form,'login_form':login_form})
+    else:
+        name=request.POST['name']
+        password=request.POST['password']
+         
+    
+    
+def search_this(request):
+
+    if 'q' in request.POST:
+        q=request.POST['q']
+        user=User.objects.filter(name__icontains=q)
+        return render(request,'display_results.html',{'user':user,'query':q})
+        
+    else:
+        return render(request,'display_results.html',{'error':True})
+        
+    return HttpResponse(message)

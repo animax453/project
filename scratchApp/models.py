@@ -1,0 +1,21 @@
+from django.db import models
+
+# Create your models here.
+
+class User(models.Model):
+    email=models.EmailField(max_length=40,primary_key=True)
+    password=models.CharField(max_length=40)
+    
+    
+class UserProfile(models.Model):
+
+    email=models.ForeignKey(User)
+    first_name=models.CharField(max_length=40)
+    last_name=models.CharField(max_length=40)
+    CHOICES=(('M','Male'),('F','Female'),('N','Not Specified'))
+    gender=models.CharField(max_length=1,choices=CHOICES)
+    age=models.IntegerField()
+    
+class Player(models.Model):
+    name=models.CharField(max_length=30)
+    
